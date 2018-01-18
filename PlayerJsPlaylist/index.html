@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>TypeScript HTML App</title>
+    <title>Player Js Playlist Assignment by Amandeep Singh</title>
     <link rel="stylesheet" href="app.css" type="text/css" />
     <script src="Scripts/player-0.1.0.js"></script>
     <script src="Scripts/jquery-3.2.1.js"></script>
@@ -15,8 +15,8 @@
         <br />
         Description<span id="description"></span>
         <br />
-        <button id="Previous">Back</button>
-        <button id="Next">Skip</button>
+        <button id="previousBtn">Back</button>
+        <button id="nextBtn">Skip</button>
         <div id="playerWrapper">
 
         </div>
@@ -30,14 +30,15 @@
     </div>
 
 
-    <script>     
+    <script>
+
         const iframe = document.createElement('iframe');
         const baseUrl = "https://riipen.mediacore.tv";
         const apiUrl = baseUrl + "/api2/media";
         const username = "riipenchallenge@mediacore.com";
         const password = "riipenchallenge";
         const nothingToPlayImg = "images/NotFoundImage.png";
-        
+
         var playlist = [];
         var currentItemIndex = 0;
 
@@ -53,13 +54,33 @@
 
         $(document).ready(function () {
             main();
+
+            $('#previousBtn').click(function () {
+                if (currentItemIndex - 1 > -1) {
+                    currentItemIndex -= 1;
+                    PlayItems();
+                }
+                else {
+                    alert('You are already on the first video in the playlist');
+                }
+            });
+
+            $('#nextBtn').click(function () {
+                if (currentItemIndex + 1 < playlist.length) {
+                    currentItemIndex += 1;
+                    PlayItems();
+                }
+                else {
+                    alert('You have reached the end of the playlist.');
+                }
+            });
+
         });
 
         function main() {
-
             SetUpPlayer();
 
-            GeneratePlaylist();                       
+            GeneratePlaylist();
 
             PlayItems();
         }
@@ -68,12 +89,12 @@
             iframe.src = nothingToPlayImg;
             iframe.width = 800;
             iframe.height = 500;
+            iframe.frameBorder = "0";
             $("#playerWrapper").append(iframe);
         }
 
-        function GeneratePlaylist()
-        {
-            // Gets media items and stores in rawJsonResponse
+        function GeneratePlaylist() {
+            // Gets media items from API
             var mediaItems = GetMediaItems();
 
             // Get all the related embed codes for items returned above
@@ -119,8 +140,7 @@
                     PlayItems();
                 }
             });
-
-        }               
+        }
 
         function GetMediaItems() {
             var response = PerformApiCall("?type=video");
@@ -146,32 +166,7 @@
             });
 
             return jqxhr.responseJSON;
-        }        
-
-        //var img = document.querySelector('img'),
-        //    a = document.querySelector('a');
-
-        //var play = function () {
-        //    // Create the iframe.
-        //    var iframe = document.createElement('iframe');
-        //    iframe.src = decodeURIComponent(img.dataset['src']);
-        //    iframe.frameBorder = "0";
-
-        //    img.parentElement.replaceChild(iframe, img);
-        //    a.parentElement.removeChild(a);
-
-        //    // Create the player.
-        //    var player = new playerjs.Player(iframe);
-
-        //    // Autoplay the video when it's ready.
-        //    player.on('ready', function () {
-        //        player.play();
-        //    });
-        //};
-
-        //img.addEventListener('click', play);
-        //a.addEventListener('click', play);
-
+        }
 
     </script>
 </body>
