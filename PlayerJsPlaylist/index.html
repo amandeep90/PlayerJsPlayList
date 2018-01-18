@@ -10,23 +10,17 @@
     <script src="Scripts/player-0.1.0.min.js"></script>
 </head>
 <body>
-    <div class="embedly-responsive">
-        Title:<span id="title"></span>
+    <div class="body">
+        Title: <span id="title"></span>
         <br />
-        Description<span id="description"></span>
+        Description: <span id="description"></span>
         <br />
+
         <button id="previousBtn">Back</button>
         <button id="nextBtn">Skip</button>
+
         <div id="playerWrapper">
-
         </div>
-
-        <!--<img src="https://i.vimeocdn.com/video/560697717_1280.jpg" data-src="%2F%2Fcdn.embedly.com%2Fwidgets%2Fmedia.html%3Fsrc%3Dhttps%253A%252F%252Fplayer.vimeo.com%252Fvideo%252F159048928%26url%3Dhttps%253A%252F%252Fvimeo.com%252F159048928%26image%3Dhttp%253A%252F%252Fi.vimeocdn.com%252Fvideo%252F560697717_1280.jpg%26key%3D1d5c48f7edc34c54bdae4c37b681ea2b%26type%3Dtext%252Fhtml%26schema%3Dvimeo" />
-        <a class="play" href="#">
-            <svg width="40" height="40">
-                <path stroke-linejoin="round" stroke="white" stroke-width="3" fill="white" d="M 5,5 L 5,25 20,15 Z"></path>
-            </svg>
-        </a>-->
     </div>
 
 
@@ -43,11 +37,10 @@
         var currentItemIndex = 0;
 
         class PlayItem {
-            constructor(id, title, description, html, url) {
+            constructor(id, title, description, url) {
                 this.id = id;
                 this.title = title;
                 this.description = description;
-                this.html = html;
                 this.url = url;
             }
         }
@@ -55,27 +48,48 @@
         $(document).ready(function () {
             main();
 
+            ToggleButtons();
+
             $('#previousBtn').click(function () {
                 if (currentItemIndex - 1 > -1) {
                     currentItemIndex -= 1;
+                    ToggleButtons();
                     PlayItems();
                 }
-                else {
-                    alert('You are already on the first video in the playlist');
-                }
+                //else {
+                //    alert('You are already on the first video in the playlist');
+                //    $('#previousBtn').prop('disabled', true);
+                //}
             });
 
             $('#nextBtn').click(function () {
                 if (currentItemIndex + 1 < playlist.length) {
                     currentItemIndex += 1;
+                    ToggleButtons();
                     PlayItems();
                 }
-                else {
-                    alert('You have reached the end of the playlist.');
-                }
+                //else {
+                //    alert('You have reached the end of the playlist.');
+                //}
             });
 
         });
+
+        function ToggleButtons() {
+            if (currentItemIndex == 0) {
+                $('#previousBtn').prop('disabled', true);
+            }
+            else if (currentItemIndex > 0) {
+                $('#previousBtn').prop('disabled', false);
+            }
+
+            if (currentItemIndex == playlist.length - 1) {
+                $('#nextBtn').prop('disabled', true);
+            }
+            else if (currentItemIndex < playlist.length - 1) {
+                $('#nextBtn').prop('disabled', false);
+            }
+        }
 
         function main() {
             SetUpPlayer();
@@ -106,7 +120,6 @@
                     id = mediaItems.items[i].id,
                     title = mediaItems.items[i].title,
                     description = mediaItems.items[i].description_plain,
-                    html = embedCodeResponse.html,
                     url = embedCodeResponse.url
                 );
 
