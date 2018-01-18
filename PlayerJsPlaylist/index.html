@@ -5,11 +5,174 @@
     <meta charset="utf-8" />
     <title>TypeScript HTML App</title>
     <link rel="stylesheet" href="app.css" type="text/css" />
-    <script src="app.js"></script>
+    <script src="Scripts/player-0.1.0.js"></script>
+    <script src="Scripts/jquery-3.2.1.js"></script>
+    <script src="Scripts/player-0.1.0.min.js"></script>
 </head>
 <body>
-    <h1>TypeScript HTML App</h1>
+    <div class="embedly-responsive">
+        Title:<span id="title"></span>
+        <br />
+        Description<span id="description"></span>
+        <br />
+        <button id="Previous">Back</button>
+        <button id="Next">Skip</button>
+        <div id="playerWrapper">
 
-    <div id="content"></div>
+        </div>
+
+        <!--<img src="https://i.vimeocdn.com/video/560697717_1280.jpg" data-src="%2F%2Fcdn.embedly.com%2Fwidgets%2Fmedia.html%3Fsrc%3Dhttps%253A%252F%252Fplayer.vimeo.com%252Fvideo%252F159048928%26url%3Dhttps%253A%252F%252Fvimeo.com%252F159048928%26image%3Dhttp%253A%252F%252Fi.vimeocdn.com%252Fvideo%252F560697717_1280.jpg%26key%3D1d5c48f7edc34c54bdae4c37b681ea2b%26type%3Dtext%252Fhtml%26schema%3Dvimeo" />
+        <a class="play" href="#">
+            <svg width="40" height="40">
+                <path stroke-linejoin="round" stroke="white" stroke-width="3" fill="white" d="M 5,5 L 5,25 20,15 Z"></path>
+            </svg>
+        </a>-->
+    </div>
+
+
+    <script>     
+        const iframe = document.createElement('iframe');
+        const baseUrl = "https://riipen.mediacore.tv";
+        const apiUrl = baseUrl + "/api2/media";
+        const username = "riipenchallenge@mediacore.com";
+        const password = "riipenchallenge";
+        const nothingToPlayImg = "images/NotFoundImage.png";
+        
+        var playlist = [];
+        var currentItemIndex = 0;
+
+        class PlayItem {
+            constructor(id, title, description, html, url) {
+                this.id = id;
+                this.title = title;
+                this.description = description;
+                this.html = html;
+                this.url = url;
+            }
+        }
+
+        $(document).ready(function () {
+            main();
+        });
+
+        function main() {
+
+            SetUpPlayer();
+
+            GeneratePlaylist();                       
+
+            PlayItems();
+        }
+
+        function SetUpPlayer() {
+            iframe.src = nothingToPlayImg;
+            iframe.width = 800;
+            iframe.height = 500;
+            $("#playerWrapper").append(iframe);
+        }
+
+        function GeneratePlaylist()
+        {
+            // Gets media items and stores in rawJsonResponse
+            var mediaItems = GetMediaItems();
+
+            // Get all the related embed codes for items returned above
+            for (var i = 0; i < mediaItems.count; i++) {
+                var embedCodeResponse = GetEmbedCode(mediaItems.items[i].id);
+
+                // Generate a playlist object
+                var tempPlayItem = new PlayItem(
+                    id = mediaItems.items[i].id,
+                    title = mediaItems.items[i].title,
+                    description = mediaItems.items[i].description_plain,
+                    html = embedCodeResponse.html,
+                    url = embedCodeResponse.url
+                );
+
+                // Cache playlist items
+                playlist.push(tempPlayItem);
+            }
+        }
+
+        function PlayItems() {
+            if (currentItemIndex >= playlist.length || currentItemIndex < 0) {
+                iframe.src = nothingToPlayImg;
+
+                return;
+            }
+
+            var currentItem = playlist[currentItemIndex];
+            iframe.src = currentItem.url;
+            $('#title').text(currentItem.title);
+            $('#description').text(currentItem.description);
+            const player = new playerjs.Player(iframe);
+
+            // Autoplay the video when it's ready.
+            player.on('ready', function () {
+                player.play();
+            });
+
+            // Play next item when current one ends.
+            player.on('ended', function () {
+                if (currentItemIndex + 1 < playlist.length) {
+                    currentItemIndex += 1;
+                    PlayItems();
+                }
+            });
+
+        }               
+
+        function GetMediaItems() {
+            var response = PerformApiCall("?type=video");
+
+            return response;
+        }
+
+        function GetEmbedCode(mediaId) {
+            var response = PerformApiCall("/" + mediaId + "/embedcode");
+
+            return response;
+        }
+
+        function PerformApiCall(endpoint) {
+            var jqxhr = $.ajax({
+                url: apiUrl + endpoint,
+                type: "GET",
+                async: false,
+                dataType: "JSON",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
+                }
+            });
+
+            return jqxhr.responseJSON;
+        }        
+
+        //var img = document.querySelector('img'),
+        //    a = document.querySelector('a');
+
+        //var play = function () {
+        //    // Create the iframe.
+        //    var iframe = document.createElement('iframe');
+        //    iframe.src = decodeURIComponent(img.dataset['src']);
+        //    iframe.frameBorder = "0";
+
+        //    img.parentElement.replaceChild(iframe, img);
+        //    a.parentElement.removeChild(a);
+
+        //    // Create the player.
+        //    var player = new playerjs.Player(iframe);
+
+        //    // Autoplay the video when it's ready.
+        //    player.on('ready', function () {
+        //        player.play();
+        //    });
+        //};
+
+        //img.addEventListener('click', play);
+        //a.addEventListener('click', play);
+
+
+    </script>
 </body>
 </html>
