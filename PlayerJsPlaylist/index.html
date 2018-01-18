@@ -5,8 +5,7 @@
     <meta charset="utf-8" />
     <title>Player Js Playlist Assignment by Amandeep Singh</title>
     <link rel="stylesheet" href="app.css" type="text/css" />
-    <script src="Scripts/player-0.1.0.js"></script>
-    <script src="Scripts/jquery-3.2.1.js"></script>
+    <script src="Scripts/jquery-3.2.1.min.js"></script>
     <script src="Scripts/player-0.1.0.min.js"></script>
 </head>
 <body>
@@ -14,10 +13,11 @@
         Title: <span id="title"></span>
         <br />
         Description: <span id="description"></span>
-        <br />
 
+        <br /><br />
         <button id="previousBtn">Back</button>
         <button id="nextBtn">Skip</button>
+        <br /><br />
 
         <div id="playerWrapper">
             <iframe id="playerFrame" src="images/loading.gif" width="800" height="500" frameborder="0"></iframe>
@@ -126,6 +126,7 @@
             iframe.src = currentItem.url;
             $('#title').text(currentItem.title);
             $('#description').text(currentItem.description);
+
             const player = new playerjs.Player(iframe);
 
             // Autoplay the video when it's ready.
