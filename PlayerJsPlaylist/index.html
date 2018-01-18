@@ -2,19 +2,15 @@
 
 <html lang="en">
 <head>
-
     <title>Player Js Playlist Assignment by Amandeep Singh</title>
 
     <meta charset="utf-8">
-    <!-- Always force latest IE rendering engine & Chrome Frame -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
-    <meta name="description" content="This single page app plays all the videos hosted on media core api for for a given user account.">
-    <meta name="keywords" content="player, playerjs, aman, amandeep, singh, workday, mediacore">
-
-    <meta name="author" content="me@asingh.io">
-
     <meta http-equiv="cleartype" content="on">
+
+    <meta name="description" content="This single page app plays all the videos hosted on media core api for a given user account.">
+    <meta name="keywords" content="player, playerjs, aman, amandeep, singh, workday, mediacore">
+    <meta name="author" content="me@asingh.io">    
 
     <link rel="shortcut icon" href="/favicon.ico">
 
@@ -26,167 +22,20 @@
     <link href="css/app.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="body">
+    <div id="body">        
         Title: <span id="title"></span>
         <br />
         Description: <span id="description"></span>
 
         <br /><br />
-
-        <button id="previousBtn">Back</button>
-        <button id="nextBtn">Skip</button>
-
+        <button id="previousBtn" class="btn">Back</button>
+        <button id="nextBtn" class="btn">Skip</button>
         <br /><br />
 
         <div id="playerWrapper">
             <iframe id="playerFrame" src="images/loading.gif" width="800" height="500" frameborder="0"></iframe>
         </div>
     </div>
-
-
-    <script>
-
-        const iframe = document.getElementById('playerFrame');
-        const baseUrl = "https://riipen.mediacore.tv";
-        const apiUrl = baseUrl + "/api2/media";
-        const username = "riipenchallenge@mediacore.com";
-        const password = "riipenchallenge";
-        const nothingToPlayImg = "images/NotFoundImage.png";
-
-        var playlist = [];
-        var currentItemIndex = 0;
-
-        class PlayItem {
-            constructor(id, title, description, url) {
-                this.id = id;
-                this.title = title;
-                this.description = description;
-                this.url = url;
-            }
-        }
-
-        $(document).ready(function () {
-            main();
-
-            $('#previousBtn').click(function () {
-                if (currentItemIndex - 1 > -1) {
-                    currentItemIndex -= 1;
-                    PlayItems();
-                }
-            });
-
-            $('#nextBtn').click(function () {
-                if (currentItemIndex + 1 < playlist.length) {
-                    currentItemIndex += 1;
-                    PlayItems();
-                }
-            });
-
-        });
-
-        function ToggleButtons() {
-            if (currentItemIndex == 0) {
-                $('#previousBtn').prop('disabled', true);
-            }
-            else if (currentItemIndex > 0) {
-                $('#previousBtn').prop('disabled', false);
-            }
-
-            if (currentItemIndex == playlist.length - 1) {
-                $('#nextBtn').prop('disabled', true);
-            }
-            else if (currentItemIndex < playlist.length - 1) {
-                $('#nextBtn').prop('disabled', false);
-            }
-        }
-
-        function main() {
-            GeneratePlaylist();
-
-            PlayItems();
-        }
-
-        function GeneratePlaylist() {
-            // Gets media items from API
-            var mediaItems = GetMediaItems();
-
-            // Get all the related embed codes for items returned above
-            for (var i = 0; i < mediaItems.count; i++) {
-                var embedCodeResponse = GetEmbedCode(mediaItems.items[i].id);
-
-                // Generate a playlist object
-                var tempPlayItem = new PlayItem(
-                    id = mediaItems.items[i].id,
-                    title = mediaItems.items[i].title,
-                    description = mediaItems.items[i].description_plain,
-                    url = embedCodeResponse.url
-                );
-
-                // Cache playlist items
-                playlist.push(tempPlayItem);
-            }
-        }
-
-        function PlayItems() {
-            if (currentItemIndex >= playlist.length || currentItemIndex < 0) {
-                currentItemIndex = 0; // This should not ever happen but just in case.
-            }
-
-            ToggleButtons();
-
-            if (playlist.length == 0) {
-                iframe.src = nothingToPlayImg;
-
-                return;
-            }
-
-            var currentItem = playlist[currentItemIndex];
-            iframe.src = currentItem.url;
-            $('#title').text(currentItem.title);
-            $('#description').text(currentItem.description);
-
-            const player = new playerjs.Player(iframe);
-
-            // Autoplay the video when it's ready.
-            player.on('ready', function () {
-                player.play();
-            });
-
-            // Play next item when current one ends.
-            player.on('ended', function () {
-                if (currentItemIndex + 1 < playlist.length) {
-                    currentItemIndex += 1;
-                    PlayItems();
-                }
-            });
-        }
-
-        function GetMediaItems() {
-            var response = PerformApiCall("?type=video");
-
-            return response;
-        }
-
-        function GetEmbedCode(mediaId) {
-            var response = PerformApiCall("/" + mediaId + "/embedcode");
-
-            return response;
-        }
-
-        function PerformApiCall(endpoint) {
-            var jqxhr = $.ajax({
-                url: apiUrl + endpoint,
-                type: "GET",
-                async: false,
-                dataType: "JSON",
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
-                }
-            });
-
-            return jqxhr.responseJSON;
-        }
-
-    </script>
+    <script src="Scripts/playlist.js"></script>    
 </body>
 </html>
