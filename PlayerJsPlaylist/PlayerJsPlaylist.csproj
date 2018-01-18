@@ -58,6 +58,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Scripts\jquery-3.2.1.intellisense.js" />
+    <Content Include="Images\loading.gif" />
     <Content Include="Images\NotFoundImage.png" />
     <Content Include="Scripts\jquery-3.2.1.js" />
     <Content Include="Scripts\jquery-3.2.1.min.js" />

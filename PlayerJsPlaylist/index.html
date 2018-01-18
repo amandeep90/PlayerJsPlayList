@@ -20,13 +20,14 @@
         <button id="nextBtn">Skip</button>
 
         <div id="playerWrapper">
+            <iframe id="playerFrame" src="images/loading.gif" width="800" height="500" frameborder="0"></iframe>
         </div>
     </div>
 
 
     <script>
 
-        const iframe = document.createElement('iframe');
+        const iframe = document.getElementById('playerFrame');
         const baseUrl = "https://riipen.mediacore.tv";
         const apiUrl = baseUrl + "/api2/media";
         const username = "riipenchallenge@mediacore.com";
@@ -46,31 +47,20 @@
         }
 
         $(document).ready(function () {
-            main();
-
-            ToggleButtons();
+            main();            
 
             $('#previousBtn').click(function () {
                 if (currentItemIndex - 1 > -1) {
                     currentItemIndex -= 1;
-                    ToggleButtons();
                     PlayItems();
-                }
-                //else {
-                //    alert('You are already on the first video in the playlist');
-                //    $('#previousBtn').prop('disabled', true);
-                //}
+                }               
             });
 
             $('#nextBtn').click(function () {
                 if (currentItemIndex + 1 < playlist.length) {
                     currentItemIndex += 1;
-                    ToggleButtons();
                     PlayItems();
-                }
-                //else {
-                //    alert('You have reached the end of the playlist.');
-                //}
+                }                
             });
 
         });
@@ -92,19 +82,9 @@
         }
 
         function main() {
-            SetUpPlayer();
-
             GeneratePlaylist();
 
             PlayItems();
-        }
-
-        function SetUpPlayer() {
-            iframe.src = nothingToPlayImg;
-            iframe.width = 800;
-            iframe.height = 500;
-            iframe.frameBorder = "0";
-            $("#playerWrapper").append(iframe);
         }
 
         function GeneratePlaylist() {
@@ -130,6 +110,13 @@
 
         function PlayItems() {
             if (currentItemIndex >= playlist.length || currentItemIndex < 0) {
+                currentItemIndex = 0; // This should not ever happen but just in case.                
+            }
+
+            ToggleButtons();
+
+            if (playlist.length == 0)
+            {
                 iframe.src = nothingToPlayImg;
 
                 return;
