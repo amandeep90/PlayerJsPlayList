@@ -61,6 +61,14 @@
     <Content Include="favicon.ico" />
     <Content Include="Images\loading.gif" />
     <Content Include="Images\NotFoundImage.png" />
+    <Content Include="See Final Solution Here\css\app.css" />
+    <Content Include="See Final Solution Here\favicon.ico" />
+    <Content Include="See Final Solution Here\Images\loading.gif" />
+    <Content Include="See Final Solution Here\Images\NotFoundImage.png" />
+    <Content Include="See Final Solution Here\index.html" />
+    <Content Include="See Final Solution Here\Scripts\jquery-3.2.1.min.js" />
+    <Content Include="See Final Solution Here\Scripts\player-0.1.0.min.js" />
+    <Content Include="See Final Solution Here\Scripts\Playlist.js" />
     <Content Include="Scripts\jquery-3.2.1.min.js" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
